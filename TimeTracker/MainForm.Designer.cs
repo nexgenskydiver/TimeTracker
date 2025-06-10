@@ -36,6 +36,7 @@
             lblElapsed = new Label();
             dataGridViewEntries = new DataGridView();
             btnAddTag = new Button();
+            btnSettings = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewEntries).BeginInit();
             SuspendLayout();
             // 
@@ -88,12 +89,13 @@
             // 
             // lblElapsed
             // 
-            lblElapsed.Location = new Point(276, 20);
+            lblElapsed.Location = new Point(205, 20);
             lblElapsed.Margin = new Padding(4, 0, 4, 0);
             lblElapsed.Name = "lblElapsed";
             lblElapsed.Size = new Size(286, 38);
             lblElapsed.TabIndex = 5;
             lblElapsed.Text = "Elapsed: 00:00:00";
+            lblElapsed.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // dataGridViewEntries
             // 
@@ -113,11 +115,21 @@
             btnAddTag.Text = "Add Tag";
             btnAddTag.UseVisualStyleBackColor = true;
             // 
+            // btnSettings
+            // 
+            btnSettings.Location = new Point(498, 20);
+            btnSettings.Name = "btnSettings";
+            btnSettings.Size = new Size(160, 40);
+            btnSettings.TabIndex = 8;
+            btnSettings.Text = "Settings";
+            btnSettings.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(902, 849);
+            Controls.Add(btnSettings);
             Controls.Add(btnAddTag);
             Controls.Add(dataGridViewEntries);
             Controls.Add(dateTimePicker1);
@@ -137,5 +149,6 @@
 
         private DataGridView dataGridViewEntries;
         private Button btnAddTag;
+        private Button btnSettings;
     }
 }

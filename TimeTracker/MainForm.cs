@@ -12,6 +12,7 @@ namespace TimeTracker.WinForms
         public event EventHandler? StartClicked;
         public event EventHandler? EndClicked;
         public event EventHandler? AddTagRequested;
+        public event EventHandler? SettingsRequested;
 
         public MainForm()
         {
@@ -26,6 +27,9 @@ namespace TimeTracker.WinForms
 
             // Add Button Tag
             btnAddTag.Click += (s, e) => AddTagRequested?.Invoke(this, e);
+
+            // Add Settings Button
+            btnSettings.Click += (s, e) => SettingsRequested?.Invoke(this, e);
         }
 
         /// <summary>
@@ -92,6 +96,37 @@ namespace TimeTracker.WinForms
             return dlg.ShowDialog(this) == DialogResult.OK
                 ? dlg.TagName
                 : null;
+        }
+
+        /// <summary>
+        /// Show the settings dialog; returns false if canceled.
+        /// </summary>
+        public bool PromptForSettings(out string server, out string database)
+        {
+            using var dlg = new SettingsForm();
+
+            // Load current values from appsettings.json
+            var configJson = System.IO.File.ReadAllText("appsettings.json");
+            var node = System.Text.Json.Nodes.JsonNode.Parse(configJson)!;
+            var current = node["ConnectionStrings"]!["Default"]!.ToString();
+            // very simple parse: assume "Server=...;Database=...;..."
+            var parts = current.Split(';')
+                               .Select(p => p.Split('=', 2))
+                               .Where(p => p.Length == 2)
+                               .ToDictionary(kv => kv[0].Trim(), kv => kv[1].Trim());
+            if (parts.TryGetValue("Server", out var s)) dlg.Server = s;
+            if (parts.TryGetValue("Database", out var d)) dlg.Database = d;
+
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                server = dlg.Server;
+                database = dlg.Database;
+                return true;
+            }
+
+            server = string.Empty;
+            database = string.Empty;
+            return false;
         }
 
 

@@ -30,6 +30,7 @@ namespace TimeTracker.WinForms.Presenters
             _view.StartClicked += OnStart;
             _view.EndClicked += OnEnd;
             _view.AddTagRequested += OnAddTagRequested;
+            _view.SettingsRequested += OnSettingsRequested;
 
             // Setup timer to update elapsed label every second
             _timer = new Timer { Interval = 1000 };
@@ -112,6 +113,27 @@ namespace TimeTracker.WinForms.Presenters
             // Refresh the checklist in the view:
             var tags = await _tagRepo.ListAllAsync();
             _view.SetTagList(tags.Select(t => t.Name));
+        }
+
+        private void OnSettingsRequested(object? sender, EventArgs e)
+        {
+            if (_view.PromptForSettings(out var server, out var database))
+            {
+                // Build the connection string
+                var newConn = $"Server={server};Database={database};Trusted_Connection=True;";
+
+                // Read & update appsettings.json
+                var path = "appsettings.json";
+                var json = System.IO.File.ReadAllText(path);
+                var node = System.Text.Json.Nodes.JsonNode.Parse(json)!;
+                node["ConnectionStrings"]!["Default"] = newConn;
+                System.IO.File.WriteAllText(path,
+                    node.ToJsonString(new System.Text.Json.JsonSerializerOptions { WriteIndented = true })
+                );
+
+                MessageBox.Show("Settings updated. Please restart the application.",
+                                "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
     }
