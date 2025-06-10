@@ -1,0 +1,53 @@
+name: CI / CD
+
+# Trigger on push to main and on pull requests targeting main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+
+    steps:
+      # 1. Checkout your code
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      # 2. Install .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore TimeTracker/TimeTracker.csproj
+
+      # 4. Build in Release mode
+      - name: Build
+        run: dotnet build TimeTracker/TimeTracker.csproj --configuration Release --no-restore
+
+      # 5. (Optional) Run tests
+      #- name: Run tests
+      #  run: dotnet test YourTests/YourTests.csproj --no-restore --verbosity normal
+
+      # 6. Publish self-contained single-file EXE
+      - name: Publish self-contained EXE
+        run: |
+          dotnet publish TimeTracker/TimeTracker.csproj \
+            -c Release \
+            -r win-x64 \
+            --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true \
+            -o published
+
+      # 7. Upload the published folder as a build artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: TimeTracker-publish
+          path: published/
