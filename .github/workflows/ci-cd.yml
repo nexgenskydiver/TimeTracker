@@ -39,13 +39,13 @@ jobs:
       # 6. Publish self-contained single-file EXE
       - name: Publish self-contained EXE
         shell: bash
-        run: |
-          dotnet publish TimeTracker/TimeTracker.csproj \
-            -c Release \
-            -r win-x64 \
-            --self-contained true \
-            /p:PublishSingleFile=true \
-            /p:IncludeNativeLibrariesForSelfExtract=true \
+        run: >
+          dotnet publish TimeTracker/TimeTracker.csproj
+            -c Release
+            -r win-x64
+            --self-contained true
+            /p:PublishSingleFile=true
+            /p:IncludeNativeLibrariesForSelfExtract=true
             -o published
 
       # 7. Upload the published folder as a build artifact
