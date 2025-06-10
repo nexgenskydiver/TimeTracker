@@ -60,13 +60,25 @@ namespace TimeTracker.WinForms.Presenters
             if (_currentEntry == null) return;
 
             _timer.Stop();
-            var notes = _view.GetNotes();
+
+            // Grab the raw multi-line text
+            var rawNotes = _view.GetNotes();
+
+            // Split on any newline sequence, drop empty lines
+            var lines = rawNotes
+                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Join them back together with comma+space
+            var notesWithCommas = string.Join(", ", lines);
+
+            // Grab selected tags
             var selectedTags = _view.GetSelectedTags();
 
+            // Persit using your repository
             await _timeRepo.EndAsync(
                 _currentEntry.TimeEntryId,
                 DateTimeOffset.Now,
-                notes,
+                notesWithCommas,
                 selectedTags
             );
 
