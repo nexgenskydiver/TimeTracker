@@ -49,7 +49,7 @@ jobs:
 
       # 7. Upload the published folder as a build artifact
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: TimeTracker-publish
           path: published/
