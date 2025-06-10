@@ -11,7 +11,8 @@ namespace TimeTracker.Core.Models
         public int TimeEntryId { get; set; }
         public DateTimeOffset StartTime { get; set; }
         public DateTimeOffset? EndTime { get; set; }
-        public string Notes { get; set; }
+        // Never null at construction
+        public string Notes { get; set; } = string.Empty;
         public List<Tag> Tags { get; set; } = new();
     }
 }
