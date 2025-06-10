@@ -38,6 +38,7 @@ jobs:
 
       # 6. Publish self-contained single-file EXE
       - name: Publish self-contained EXE
+        shell: bash
         run: |
           dotnet publish TimeTracker/TimeTracker.csproj \
             -c Release \
